@@ -175,3 +175,8 @@ footer p { margin: 4px 0; }
   .donate img { width: 110px; flex-shrink: 0; }
   .donate > div { min-width: 0; }
 }
+
+.contact { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 16px 0 12px; }
+.contact b { color: var(--text); width: 100%; }
+.contact a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; font-size: 14px; }
+.contact a svg { color: var(--accent); flex-shrink: 0; }

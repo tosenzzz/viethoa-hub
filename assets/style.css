@@ -168,3 +168,10 @@ footer p { margin: 4px 0; }
   .grid .btn { font-size: 13px; padding: 8px 6px; }
   .hero { padding: 24px 0 12px; }
 }
+
+/* Mobile: chữ ủng hộ đứng thành cột bên phải QR */
+@media (max-width: 600px) {
+  .donate { flex-wrap: nowrap; gap: 12px; align-items: center; }
+  .donate img { width: 110px; flex-shrink: 0; }
+  .donate > div { min-width: 0; }
+}

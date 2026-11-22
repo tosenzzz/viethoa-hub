@@ -112,9 +112,10 @@ code { font: .85em ui-monospace, SFMono-Regular, Menlo, monospace; background: v
   .cols .panel + .panel { margin-top: 0; }
   .cols > div > .panel:nth-child(1) { order: 1; }
   .cols > aside > #patcher { order: 2; }
-  .cols > div > .panel:nth-child(2) { order: 3; }
-  .cols > div > .panel:nth-child(3) { order: 4; }
-  .cols > aside > .panel:nth-child(2) { order: 5; }
+  .cols > aside > .donate-panel { order: 3; }
+  .cols > div > .panel:nth-child(2) { order: 4; }
+  .cols > div > .panel:nth-child(3) { order: 5; }
+  .cols > aside > .panel:last-child { order: 6; }
 }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); }
 .panel + .panel { margin-top: 16px; }
@@ -180,3 +181,9 @@ footer p { margin: 4px 0; }
 .contact b { color: var(--text); width: 100%; }
 .contact a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; font-size: 14px; }
 .contact a svg { color: var(--accent); flex-shrink: 0; }
+
+.donate-panel .donate { gap: 12px; flex-wrap: nowrap; }
+.donate-panel .donate img { width: 110px; flex-shrink: 0; }
+.donate-panel .donate p { margin: 0 0 6px; font-size: 14px; }
+.donate-panel .donate > div { min-width: 0; }
+.panel h3.sub { font-size: 15px; margin: 16px 0 8px; }

@@ -187,3 +187,15 @@ footer p { margin: 4px 0; }
 .donate-panel .donate p { margin: 0 0 6px; font-size: 14px; }
 .donate-panel .donate > div { min-width: 0; }
 .panel h3.sub { font-size: 15px; margin: 16px 0 8px; }
+
+/* Giới thiệu: 5 dòng + Xem thêm */
+.about { --lh: 1.6em; line-height: var(--lh); }
+.about p { margin: 0 0 10px; }
+.about p:last-child { margin-bottom: 0; }
+.about.clamp { max-height: calc(var(--lh) * 5); overflow: hidden; position: relative; }
+.about.clamp::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--lh); background: linear-gradient(transparent, var(--surface)); }
+.more { background: none; border: 0; padding: 4px 0; margin: 4px 0 10px; color: var(--accent); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+.more[hidden] { display: none; }
+.about:not(.clamp) + .more { margin-top: 8px; }
+.panel .src { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+.detail-cover.has-img::after { background: linear-gradient(rgb(0 0 0 / .15), rgb(0 0 0 / .78)); }

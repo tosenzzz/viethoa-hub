@@ -131,3 +131,22 @@
   ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
   drop.addEventListener('drop', (e) => handle(e.dataTransfer.files[0]));
 })();
+
+// Giới thiệu: tối đa 5 dòng, dài hơn thì hiện nút "Xem thêm..."
+(() => {
+  const about = document.getElementById('about');
+  const more = document.getElementById('more');
+  if (!about || !more) return;
+  const check = () => {
+    if (!about.classList.contains('clamp')) return;
+    more.hidden = about.scrollHeight <= about.clientHeight + 2;
+  };
+  more.addEventListener('click', () => {
+    const open = about.classList.toggle('clamp') === false;
+    more.textContent = open ? 'Thu gọn' : 'Xem thêm...';
+    if (!open) about.scrollIntoView({ block: 'nearest' });
+  });
+  addEventListener('resize', check);
+  document.fonts?.ready.then(check);
+  check();
+})();

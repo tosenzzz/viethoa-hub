@@ -62,19 +62,24 @@
   async function fetchWithProgress(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error('Không tải được patch (' + res.status + ').');
-    const total = +res.headers.get('content-length') || 0;
-    if (!res.body || !total) return new Uint8Array(await res.arrayBuffer());
+    // Khi server nén gzip (GitHub Pages), content-length là cỡ đã nén còn body là dữ liệu
+    // đã giải nén, dài hơn: chỉ dùng nó để vẽ tiến độ, buffer thì nối từng khúc.
+    const total = (+res.headers.get('content-length') || 0) * (res.headers.get('content-encoding') ? 1.1 : 1);
+    if (!res.body) return new Uint8Array(await res.arrayBuffer());
     const reader = res.body.getReader();
-    const buf = new Uint8Array(total);
+    const chunks = [];
     let got = 0;
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
-      buf.set(value, got);
+      chunks.push(value);
       got += value.length;
-      bar.style.width = Math.round((got / total) * 90) + '%';
+      if (total) bar.style.width = Math.min(90, Math.round((got / total) * 90)) + '%';
     }
-    return got === total ? buf : buf.subarray(0, got);
+    const buf = new Uint8Array(got);
+    let at = 0;
+    for (const c of chunks) { buf.set(c, at); at += c.length; }
+    return buf;
   }
 
   const say = (html, cls = '') => { status.className = 'status ' + cls; status.innerHTML = html; };

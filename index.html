@@ -17,15 +17,40 @@
 <header class="top"><div class="wrap">
   <a class="brand" href="./"><span class="logo">VH</span>Game Việt Hóa</a>
   <span class="spacer"></span>
-  <span class="pill">9 game</span>
+  <span class="pill">10 game</span>
 </div></header>
 <main class="wrap">
 <section class="hero"><h1>Game Việt Hóa</h1><p>ROM hack GBA &amp; SNES tiếng Việt. Vá ngay trên trình duyệt, không cần cài gì.</p></section>
 <div class="bar-tools">
-  <div class="tabs" role="tablist"><button class="tab" role="tab" data-filter="all">Tất cả <span>9</span></button><button class="tab" role="tab" data-filter="GBA">GBA <span>8</span></button><button class="tab" role="tab" data-filter="SNES">SNES <span>1</span></button><button class="tab" role="tab" data-filter="Pokémon">Pokémon <span>3</span></button><button class="tab" role="tab" data-filter="Fire Emblem">Fire Emblem <span>5</span></button></div>
+  <div class="tabs" role="tablist"><button class="tab" role="tab" data-filter="all">Tất cả <span>10</span></button><button class="tab" role="tab" data-filter="GBA">GBA <span>9</span></button><button class="tab" role="tab" data-filter="SNES">SNES <span>1</span></button><button class="tab" role="tab" data-filter="Pokémon">Pokémon <span>4</span></button><button class="tab" role="tab" data-filter="Fire Emblem">Fire Emblem <span>5</span></button></div>
   <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Tìm game…" aria-label="Tìm game"></label>
 </div>
-<div class="grid"><a class="card" href="game/pokemon-unbound/" data-group="GBA Pokémon" data-search="Pokémon Unbound Pokémon GBA RPG Phiêu lưu Hack FireRed">
+<section class="panel admin-panel admin-only" hidden>
+  <h2>Admin <button class="more" type="button" data-admin-logout>Thoát</button></h2>
+  <form class="fund-admin" data-fund-admin="https://test-api.dppaint.com.vn/api/game/v1/viethoa/soulgold/points" hidden>
+  <label><span>Cộng điểm Pokémon SoulGold</span><input type="number" step="1" inputmode="numeric" placeholder="VD: 50 (âm để trừ)" required></label>
+  <button class="btn" type="submit">Cộng điểm</button>
+  <p class="msg"></p>
+</form>
+</section>
+<div class="grid"><a class="card" href="game/soulgold/" data-group="GBA Pokémon" data-search="Pokémon SoulGold Pokémon GBA RPG Johto Hack Emerald">
+  <div class="cover  has-img" style="--c1:#d4a017;--c2:#6b4b00">
+  <img src="assets/covers/soulgold.jpg" alt="" loading="lazy">
+  <span class="badge">GBA</span><span class="badge r">Đang dịch...</span>
+  <div class="t">Pokémon SoulGold</div>
+</div>
+  <div class="body">
+    <div class="meta">Pokémon · <span class="st">Đang dịch...</span></div>
+    <p>Hack Johto mở rộng trên pokeemerald-expansion: 9 starter, Mega mới, hơn 100 thành tựu.</p>
+    <div class="fund mini loading" data-fund="https://test-api.dppaint.com.vn/api/game/v1/viethoa/soulgold/points">
+  
+  <div class="fbar"><i></i></div>
+  <div class="ftext"><b data-f="current">…</b>/<span data-f="target">…</span> điểm</div>
+</div>
+    <span class="btn">Xem &amp; Ủng hộ</span>
+  </div>
+</a>
+<a class="card" href="game/pokemon-unbound/" data-group="GBA Pokémon" data-search="Pokémon Unbound Pokémon GBA RPG Phiêu lưu Hack FireRed">
   <div class="cover  has-img" style="--c1:#e8453c;--c2:#7a1f1b">
   <img src="assets/covers/pokemon-unbound.jpg" alt="" loading="lazy">
   <span class="badge">GBA</span><span class="badge r">v2.1.1.1</span>
@@ -154,5 +179,6 @@
   <p>Bản quyền game và ROM hack thuộc về tác giả gốc.</p>
 </div></footer>
 <script src="assets/home.js"></script>
+<script src="assets/funding.js"></script>
 </body>
 </html>

@@ -199,3 +199,35 @@ footer p { margin: 4px 0; }
 .about:not(.clamp) + .more { margin-top: 8px; }
 .panel .src { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
 .detail-cover.has-img::after { background: linear-gradient(rgb(0 0 0 / .15), rgb(0 0 0 / .78)); }
+
+/* Quyên góp */
+.fund .fbar { height: 10px; background: var(--surface-2); border-radius: 5px; overflow: hidden; }
+.fund .fbar i { display: block; height: 100%; width: 0; border-radius: 5px; background: linear-gradient(90deg, #f59e0b, #ef4444); transition: width .6s ease; }
+.fund.done .fbar i { background: var(--ok); }
+.fund.loading .fbar i { width: 30%; opacity: .35; animation: fundpulse 1.2s ease-in-out infinite alternate; }
+@keyframes fundpulse { to { opacity: .8; } }
+.fund .fnum { display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px; }
+.fund .fnum b { font-size: 30px; line-height: 1; letter-spacing: -.02em; }
+.fund .fnum span { color: var(--muted); }
+.fund .fnum em { margin-left: auto; font-style: normal; font-weight: 700; color: var(--accent); }
+.fund .facts { margin-top: 12px; }
+.fund.mini .fbar { height: 6px; }
+.fund.mini .ftext { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.fund.mini .ftext b { color: var(--text); }
+.fnote { font-size: 14px; color: var(--muted); margin: 12px 0 0 !important; }
+.meta .st { color: #d97706; font-weight: 700; }
+.fund-admin { display: grid; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.fund-admin[hidden] { display: none; }
+.fund-admin label { display: grid; gap: 4px; font-size: 14px; font-weight: 600; }
+.fund-admin input { border: 1px solid var(--line); background: var(--surface); color: var(--text); padding: 9px 12px; border-radius: 10px; font: inherit; }
+.fund-admin .btn { margin-top: 0; }
+.fund-admin.busy { opacity: .6; pointer-events: none; }
+.fund-admin .msg { margin: 0; font-size: 13px; }
+.fund-admin .msg.ok { color: var(--ok); }
+.fund-admin .msg.err { color: var(--err); }
+.admin-panel { margin-bottom: 16px; border-color: #f59e0b; }
+.admin-panel[hidden] { display: none; }
+.admin-panel h2 { display: flex; align-items: center; justify-content: space-between; }
+.admin-panel h2 .more { margin: 0; }
+.admin-panel .fund-admin:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+@media (max-width: 860px) { .cols > aside > #funding { order: 2; } }

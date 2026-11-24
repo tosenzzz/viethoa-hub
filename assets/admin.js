@@ -165,7 +165,8 @@
     if (!g) { ed.innerHTML = '<div class="panel"><p>Chưa có game nào. Bấm “+ Thêm”.</p></div>'; return; }
     const funding = !!g.funding;
     const liveUrl = `../game/${encodeURIComponent(g.slug)}/`;
-    ed.innerHTML = `
+    if (!LK || LK.for !== g) LK = { for: g, q: g.title || '', results: null, errors: [], detail: null, pick: {}, img: 0, busy: '', msg: '' };
+    ed.innerHTML = `${lookupPanel(g)}
 <div class="panel">
   <div class="ed-head">
     <h2>${esc(g.title || 'Game mới')}</h2>
@@ -214,7 +215,7 @@
 <div class="panel">
   <h2>Nội dung</h2>
   ${field('Mô tả ngắn (thẻ ở trang chủ)', 'blurb', { type: 'textarea', val: g.blurb, attrs: 'rows="2"' })}
-  ${field('Giới thiệu', 'about', { type: 'textarea', val: [].concat(g.about || []).join('\n\n'), hint: 'Mỗi đoạn cách nhau một dòng trống', attrs: 'rows="9" data-split="para"' })}
+  ${field('Giới thiệu', 'about', { type: 'textarea', val: [].concat(g.about || []).join('\n\n'), hint: `Mỗi đoạn cách nhau một dòng trống · <a href="#" data-act="translate">Mở Google Dịch</a>`, attrs: 'rows="9" data-split="para"' })}
   ${field('Nguồn', 'source', { type: 'textarea', val: [].concat(g.source || []).join('\n'), hint: 'Mỗi dòng một URL', attrs: 'rows="2" data-split="line" spellcheck="false"' })}
   ${field('Bản Việt hóa', 'vn', { type: 'textarea', val: g.vn, attrs: 'rows="2"', ph: 'Dịch hội thoại, menu…' })}
   ${field('Ghi chú thêm', 'notes', { type: 'textarea', val: (g.notes || []).join('\n'), hint: 'Mỗi dòng một ý', attrs: 'rows="2" data-split="line"' })}
@@ -239,6 +240,86 @@ ${funding && CFG.api ? `<div class="panel" id="points">
   <p class="msg" data-p="msg"></p>
 </div>` : ''}`;
     if (funding && CFG.api) loadPoints(g);
+  }
+
+  // ---------- Tra cứu tự động (PokéHarbor, GameBrew, Wikipedia) ----------
+  let LK = null;
+  const LK_FIELDS = [
+    ['title', 'Tên game'], ['version', 'Phiên bản'], ['platform', 'Hệ máy'], ['series', 'Series'], ['tags', 'Tag'],
+    ['blurb', 'Mô tả ngắn'], ['about', 'Giới thiệu'], ['source', 'Nguồn'], ['cover', 'Ảnh bìa'], ['accent', 'Màu lấy từ ảnh'],
+  ];
+  const isEmpty = (v) => v == null || v === '' || (Array.isArray(v) && !v.length);
+  const show = (k, d) => (k === 'about' ? d.about.map((t) => `<p>${esc(t)}</p>`).join('') : k === 'tags' || k === 'source' ? esc((d[k] || []).join(', ')) : esc(d[k]));
+  function lookupPanel(g) {
+    const d = LK.detail;
+    return `<div class="panel lookup">
+  <form class="lk-form" data-act-form="lookup">
+    <input name="q" value="${esc(LK.q)}" placeholder="Nhập tên game để tra (PokéHarbor, GameBrew, Wikipedia)" required>
+    <button class="btn sm" type="submit" ${LK.busy ? 'disabled' : ''}>Tìm</button>
+  </form>
+  ${LK.busy ? `<p class="msg">${esc(LK.busy)}</p>` : ''}
+  ${LK.msg ? `<p class="msg ok">${esc(LK.msg)}</p>` : ''}
+  ${LK.errors.length ? `<p class="msg err">${LK.errors.map(esc).join('<br>')}</p>` : ''}
+  ${LK.results && !d ? (LK.results.length ? `<ul class="lk-results">${LK.results.map((r, i) => `<li><button type="button" data-act="lk-pick" data-i="${i}">
+      <span class="lk-src">${esc(r.src)}</span><b>${esc(r.title)}</b><small>${esc(r.snippet)}</small></button></li>`).join('')}</ul>` : '<p class="muted">Không tìm thấy kết quả.</p>') : ''}
+  ${d ? `<div class="lk-detail">
+    <p class="lk-head"><span class="lk-src">${esc(d.src)}</span> <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a>${d.author ? ` · tác giả ${esc(d.author)}` : ''}${d.versionRaw && d.versionRaw !== d.version ? ` · bản ${esc(d.versionRaw)}` : ''}</p>
+    <table class="lk-table">${LK_FIELDS.filter(([k]) => (k === 'cover' || k === 'accent' ? d.images.length : !isEmpty(d[k]))).map(([k, label]) => `<tr>
+      <td><label><input type="checkbox" data-lkf="${k}" ${LK.pick[k] ? 'checked' : ''}> ${label}</label></td>
+      <td>${k === 'cover' ? `<div class="lk-imgs">${d.images.map((u, i) => `<label><input type="radio" name="lkimg" value="${i}" ${LK.img === i ? 'checked' : ''}><img src="${esc(VHLookup.proxied(u))}" alt="" loading="lazy"></label>`).join('')}</div>`
+        : k === 'accent' ? '<small class="muted">Tính từ ảnh được chọn</small>' : `<div class="lk-val">${show(k, d)}</div>`}</td>
+    </tr>`).join('')}</table>
+    <p class="muted small">Nội dung lấy về là tiếng Anh, điền xong nhớ viết lại mô tả ngắn và giới thiệu bằng tiếng Việt.</p>
+    <button class="btn sm" type="button" data-act="lk-apply" ${LK.busy ? 'disabled' : ''}>Điền vào form</button>
+    <button class="btn ghost sm" type="button" data-act="lk-back">Chọn kết quả khác</button>
+  </div>` : ''}
+</div>`;
+  }
+  async function lookupSearch(term) {
+    LK.q = term; LK.busy = 'Đang tìm…'; LK.detail = null; LK.msg = ''; LK.errors = [];
+    render();
+    try {
+      const { results, errors } = await VHLookup.search(term);
+      LK.results = results; LK.errors = errors;
+    } catch (e) { LK.errors = [e.message]; }
+    LK.busy = '';
+    render();
+  }
+  async function lookupPick(i) {
+    const g = LK.for;
+    LK.busy = 'Đang đọc trang…'; LK.errors = [];
+    render();
+    try {
+      const d = await VHLookup.details(LK.results[i]);
+      LK.detail = d; LK.img = 0;
+      const fresh = g._autoSlug || !g.title;
+      LK.pick = {};
+      for (const [k] of LK_FIELDS) {
+        const cur = k === 'cover' ? g._cover : k === 'accent' ? (g._cover ? 1 : null) : g[k];
+        LK.pick[k] = fresh || isEmpty(cur);
+      }
+    } catch (e) { LK.errors = [e.message]; }
+    LK.busy = '';
+    render();
+  }
+  async function lookupApply() {
+    const g = LK.for, d = LK.detail, P = LK.pick;
+    LK.busy = 'Đang điền…';
+    render();
+    try {
+      for (const k of ['title', 'version', 'platform', 'series', 'blurb']) if (P[k] && d[k]) g[k] = d[k];
+      for (const k of ['tags', 'about', 'source']) if (P[k] && d[k]?.length) g[k] = [...d[k]];
+      if (P.title && g._autoSlug) g.slug = slugify(g.title);
+      if ((P.cover || P.accent) && d.images[LK.img]) {
+        const bytes = await VHLookup.image(d.images[LK.img]);
+        if (P.cover) g._cover = { bytes, ext: 'jpg', url: URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' })) };
+        if (P.accent) g.accent = await VHLookup.accent(bytes);
+      }
+      LK.detail = null; LK.results = null;
+      LK.msg = `Đã điền từ ${d.src}. Viết lại mô tả và giới thiệu bằng tiếng Việt rồi bấm Lưu.`;
+    } catch (e) { LK.errors = [e.message]; }
+    LK.busy = '';
+    render();
   }
 
   function patchRow(p, j) {
@@ -326,6 +407,8 @@ ${funding && CFG.api ? `<div class="panel" id="points">
 
   ed.addEventListener('change', async (e) => {
     const el = e.target;
+    if (el.dataset.lkf) { LK.pick[el.dataset.lkf] = el.checked; return; }
+    if (el.name === 'lkimg') { LK.img = +el.value; return; }
     if (el.name === 'mode') {
       const g = S.data.games[sel];
       if (el.value === 'funding') { g.status ||= 'Đang dịch...'; g.funding ||= { note: DEFAULT_NOTE }; }
@@ -391,6 +474,15 @@ ${funding && CFG.api ? `<div class="panel" id="points">
       case 'nocover': g._cover = null; return render();
       case 'noqr': S.qr = null; return render();
       case 'rmpatch': g.patches.splice(+b.closest('.prow').dataset.j, 1); return render();
+      case 'lk-pick': return lookupPick(+b.dataset.i);
+      case 'lk-apply': return lookupApply();
+      case 'lk-back': LK.detail = null; return render();
+      case 'translate': {
+        e.preventDefault();
+        const text = [g.blurb, ...[].concat(g.about || [])].filter(Boolean).join('\n\n').slice(0, 4800);
+        open('https://translate.google.com/?' + new URLSearchParams({ sl: 'auto', tl: 'vi', op: 'translate', text }), '_blank', 'noopener');
+        return;
+      }
     }
   });
 
@@ -404,6 +496,12 @@ ${funding && CFG.api ? `<div class="panel" id="points">
     fetch(ptsUrl(g)).then((r) => r.json()).then(showPoints).catch(() => { const n = $('#points [data-p="current"]'); if (n) n.textContent = '?'; });
   }
   ed.addEventListener('submit', async (e) => {
+    if (e.target.matches('[data-act-form="lookup"]')) {
+      e.preventDefault();
+      const term = e.target.q.value.trim();
+      if (term) lookupSearch(term);
+      return;
+    }
     if (!e.target.matches('[data-act-form="points"]')) return;
     e.preventDefault();
     const f = e.target, g = S.data.games[sel], msg = $('#points [data-p="msg"]');

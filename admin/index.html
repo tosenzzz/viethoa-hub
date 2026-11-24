@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Game Việt Hóa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/admin.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23151824'/><text x='16' y='22' font-size='16' font-family='sans-serif' font-weight='800' fill='white' text-anchor='middle'>A</text></svg>">
+</head>
+<body data-config="{&quot;repo&quot;:&quot;tosenzzz/viethoa-hub-source&quot;,&quot;branch&quot;:&quot;main&quot;,&quot;api&quot;:&quot;https://test-api.dppaint.com.vn/api/game&quot;}">
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><span class="logo">VH</span>Admin</a>
+  <span class="spacer"></span>
+  <span class="who" id="who"></span>
+  <button class="btn ghost sm" id="logout" type="button" hidden>Đăng xuất</button>
+</div></header>
+
+<main class="wrap" id="app">
+  <section class="panel login" id="login">
+    <h2>Đăng nhập bằng GitHub token</h2>
+    <p>Trang này sửa thẳng <code id="repoName"></code> qua GitHub API. Mỗi lần lưu là một commit, GitHub Actions build lại và đẩy lên site sau khoảng 1–2 phút.</p>
+    <form id="loginForm">
+      <label class="f"><span>Token</span><input id="token" type="password" autocomplete="off" placeholder="github_pat_…" required></label>
+      <label class="chk"><input type="checkbox" id="remember"> Nhớ trên máy này</label>
+      <button class="btn" type="submit">Vào</button>
+      <p class="msg" id="loginMsg"></p>
+    </form>
+    <details>
+      <summary>Tạo token thế nào?</summary>
+      <ol>
+        <li>Mở <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Fine-grained token</a>.</li>
+        <li>Repository access: <b>Only select repositories</b> → chọn repo source.</li>
+        <li>Permissions: <b>Contents: Read and write</b>, <b>Actions: Read-only</b> (để xem tiến độ build).</li>
+        <li>Tạo rồi dán token vào ô trên.</li>
+      </ol>
+    </details>
+  </section>
+
+  <div class="layout" id="main" hidden>
+    <aside class="side">
+      <div class="side-head">
+        <b>Game <span id="count"></span></b>
+        <button class="btn sm" id="addGame" type="button">+ Thêm</button>
+      </div>
+      <ul class="glist" id="glist"></ul>
+      <button class="site-btn" id="siteBtn" type="button">⚙ Cài đặt site</button>
+    </aside>
+    <section class="editor" id="editor"></section>
+  </div>
+</main>
+
+<div class="savebar" id="savebar" hidden>
+  <div class="wrap">
+    <span id="dirty"></span>
+    <input id="commitMsg" type="text" placeholder="Ghi chú commit (tuỳ chọn)">
+    <button class="btn ghost" id="discard" type="button">Bỏ thay đổi</button>
+    <button class="btn" id="save" type="button">Lưu &amp; Deploy</button>
+  </div>
+  <div class="wrap"><p class="msg" id="saveMsg"></p></div>
+</div>
+
+<script src="../assets/admin.js"></script>
+</body>
+</html>

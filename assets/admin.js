@@ -62,7 +62,8 @@
   }
 
   // Chữ ký để biết có thay đổi chưa lưu (bytes mới tính theo độ dài).
-  const sig = () => JSON.stringify({ d: S.data, q: S.qr }, (k, v) => (k === 'bytes' ? 'new:' + v.length : k === 'url' || k === '_autoSlug' ? undefined : v));
+  // Không được để JSON.stringify duyệt Uint8Array (patch 10 MB → mỗi phím gõ treo vài giây).
+  const sig = () => JSON.stringify({ d: S.data, q: S.qr }, (k, v) => (v instanceof Uint8Array ? 'new:' + v.length : k === 'url' || k === '_autoSlug' ? undefined : v));
   const dirty = () => S && sig() !== S.loadedSig;
 
   // ---------- Đăng nhập ----------
@@ -314,7 +315,7 @@ ${funding && CFG.api ? `<div class="panel" id="points">
       if (el.dataset.k.startsWith('accent')) {
         $('.cover-prev', ed).style.setProperty('--c' + (+el.dataset.k.slice(-1) + 1), el.value);
       }
-      renderList();
+      if (/^(title|slug|version|platform|status|accent)/.test(el.dataset.k)) renderList(); else updateBar();
     } else if (el.dataset.pk) {
       const p = g.patches[+el.closest('.prow').dataset.j];
       p[el.dataset.pk] = el.value.trim();

@@ -347,6 +347,16 @@ ${funding && CFG.api ? `<div class="panel" id="points">
   ${field('Câu ủng hộ', 'donate', { type: 'textarea', val: s.donate, attrs: 'rows="2"' })}
 </div>
 <div class="panel">
+  <h2>Xác nhận khi vào trang</h2>
+  <label class="chk switch"><input type="checkbox" data-k="confirm.enabled" ${s.confirm?.enabled ? 'checked' : ''}> Bật</label>
+  ${field('Câu hỏi', 'confirm.question', { val: s.confirm?.question || '', ph: 'VD: Bạn đã có ROM gốc hợp lệ chưa?' })}
+  ${field('Lựa chọn', 'confirm.options', { type: 'textarea', val: (s.confirm?.options || []).join('\n'), hint: 'Mỗi dòng một lựa chọn. Người xem đã trả lời thì lần sau không hỏi lại (đổi câu hỏi thì hỏi lại).', attrs: 'rows="3" data-split="line"' })}
+  <div class="grid2">
+    ${field('Đáp án đúng', 'confirm.answer', { type: 'number', val: s.confirm?.answer ?? '', ph: 'VD: 1', hint: 'Số thứ tự dòng của lựa chọn đúng. Để trống = chọn gì cũng được.', attrs: 'min="1" step="1" inputmode="numeric"' })}
+  </div>
+  ${field('Thông báo lỗi', 'confirm.error', { type: 'textarea', val: s.confirm?.error || '', ph: 'VD: Bạn cần ROM gốc hợp lệ để dùng patch.', hint: 'Chọn sai đáp án: khoá vá trên web, ẩn link tải patch và hiện thông báo này ở chỗ đó.', attrs: 'rows="2"' })}
+</div>
+<div class="panel">
   <h2>Mã QR ủng hộ</h2>
   <div class="cover-row">
     ${S.qr ? `<img class="qr-prev" src="${esc(S.qr.url || '../assets/qr.png')}" alt="QR">` : '<p class="muted">Chưa có QR.</p>'}
@@ -360,7 +370,7 @@ ${funding && CFG.api ? `<div class="panel" id="points">
 
   // Gán giá trị form vào object
   function setVal(obj, k, el) {
-    let v = el.value;
+    let v = el.type === 'checkbox' ? el.checked : el.type === 'number' ? (el.value === '' ? undefined : Number(el.value)) : el.value;
     const split = el.dataset.split;
     if (split === ',') v = v.split(',').map((x) => x.trim()).filter(Boolean);
     else if (split === 'line') v = v.split('\n').map((x) => x.trim()).filter(Boolean);
@@ -523,6 +533,11 @@ ${funding && CFG.api ? `<div class="panel" id="points">
   });
 
   // ---------- Lưu ----------
+  // Chừa chỗ dưới trang đúng bằng chiều cao thanh lưu (trên mobile thanh xuống 2–3 dòng).
+  const bar = $('#savebar');
+  const pad = () => { document.body.style.paddingBottom = (bar.hidden ? 24 : bar.offsetHeight + 24) + 'px'; };
+  if (window.ResizeObserver) new ResizeObserver(pad).observe(bar);
+  addEventListener('resize', pad);
   function updateBar() {
     if (!S || saving) return;
     const d = dirty();
@@ -551,6 +566,10 @@ ${funding && CFG.api ? `<div class="panel" id="points">
         if (!p.base) errs.push(`${name}: patch ${p.file} chưa ghi ROM cần dùng.`);
       }
     });
+    const c = S.data.site.confirm;
+    if (c?.enabled && (!c.question || !c.options?.length)) errs.push('Xác nhận khi vào trang: đã bật thì cần câu hỏi và ít nhất 1 lựa chọn.');
+    if (c?.enabled && c.answer != null && !(Number.isInteger(c.answer) && c.answer >= 1 && c.answer <= (c.options?.length || 0))) errs.push(`Xác nhận khi vào trang: đáp án phải là số từ 1 đến ${c.options?.length || 0}.`);
+    if (c?.enabled && c.answer != null && !c.error) errs.push('Xác nhận khi vào trang: có đáp án thì cần thông báo lỗi.');
     return errs;
   }
 

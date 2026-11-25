@@ -231,3 +231,12 @@ footer p { margin: 4px 0; }
 .admin-panel h2 .more { margin: 0; }
 .admin-panel .fund-admin:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
 @media (max-width: 860px) { .cols > aside > #funding { order: 2; } }
+
+/* Hộp xác nhận khi vào trang */
+.vh-lock, .vh-lock body { overflow: hidden; }
+.vh-confirm { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / .55); backdrop-filter: blur(3px); }
+.vh-confirm .box { width: min(440px, 100%); background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 16px; padding: 22px; box-shadow: 0 20px 60px rgb(0 0 0 / .35); }
+.vh-confirm .q { margin: 0 0 16px; font-size: 17px; font-weight: 700; line-height: 1.4; }
+.vh-confirm .opts { display: grid; gap: 8px; }
+.vh-confirm .btn { width: 100%; justify-content: center; text-align: center; padding: 11px 14px; }
+.lock-msg { margin: 0; padding: 12px 14px; border-radius: 10px; background: color-mix(in srgb, var(--err) 12%, transparent); color: var(--err); font-weight: 600; white-space: pre-line; }

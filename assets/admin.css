@@ -1,6 +1,6 @@
 /* Trang admin — dùng chung token màu của style.css */
 [hidden] { display: none !important; }
-body { padding-bottom: 110px; }
+body { padding-bottom: 160px; }
 .btn.sm { padding: 6px 12px; font-size: 13px; }
 .btn.danger { background: var(--err); color: #fff; }
 .btn:disabled { opacity: .45; cursor: default; }
@@ -111,7 +111,9 @@ small.block { display: block; margin: 6px 0 12px; font-size: 12.5px; }
   .prow select, .prow [data-pk="base"], .prow [data-pk="baseSha1"] { grid-column: 1 / 3; grid-row: auto; }
   .savebar .wrap { flex-wrap: wrap; }
   .savebar input { order: 3; flex-basis: 100%; }
-  .savebar #dirty { flex: 1; }
+  .savebar #dirty { flex: 1; min-width: 0; white-space: normal; font-size: 13px; line-height: 1.3; }
+  .savebar .btn { padding: 8px 12px; font-size: 13.5px; }
+  .savebar .wrap { gap: 8px; }
 }
 
 /* Tra cứu tự động */
@@ -138,3 +140,4 @@ small.block { display: block; margin: 6px 0 12px; font-size: 12.5px; }
 .lk-imgs input:checked + img { border-color: var(--accent); }
 .small { font-size: 12.5px; }
 @media (max-width: 600px) { .lk-table td:first-child { width: auto; white-space: normal; } }
+.switch { margin-bottom: 12px; font-weight: 600; }

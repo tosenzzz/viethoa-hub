@@ -352,9 +352,9 @@ ${funding && CFG.api ? `<div class="panel" id="points">
   ${field('Câu hỏi', 'confirm.question', { val: s.confirm?.question || '', ph: 'VD: Bạn đã có ROM gốc hợp lệ chưa?' })}
   ${field('Lựa chọn', 'confirm.options', { type: 'textarea', val: (s.confirm?.options || []).join('\n'), hint: 'Mỗi dòng một lựa chọn. Người xem đã trả lời thì lần sau không hỏi lại (đổi câu hỏi thì hỏi lại).', attrs: 'rows="3" data-split="line"' })}
   <div class="grid2">
-    ${field('Đáp án đúng', 'confirm.answer', { type: 'number', val: s.confirm?.answer ?? '', ph: 'VD: 1', hint: 'Số thứ tự dòng của lựa chọn đúng. Để trống = chọn gì cũng được.', attrs: 'min="1" step="1" inputmode="numeric"' })}
+    ${field('Đáp án sai', 'confirm.wrong', { type: 'number', val: s.confirm?.wrong ?? '', ph: 'VD: 2', hint: 'Số thứ tự dòng của lựa chọn sai. Chỉ chọn dòng này mới bị khoá. Để trống = không khoá.', attrs: 'min="1" step="1" inputmode="numeric"' })}
   </div>
-  ${field('Thông báo lỗi', 'confirm.error', { type: 'textarea', val: s.confirm?.error || '', ph: 'VD: Bạn cần ROM gốc hợp lệ để dùng patch.', hint: 'Chọn sai đáp án: khoá vá trên web, ẩn link tải patch và hiện thông báo này ở chỗ đó.', attrs: 'rows="2"' })}
+  ${field('Thông báo lỗi', 'confirm.error', { type: 'textarea', val: s.confirm?.error || '', ph: 'VD: Bạn cần ROM gốc hợp lệ để dùng patch.', hint: 'Chọn vào đáp án sai: khoá vá trên web, ẩn link tải patch và hiện thông báo này ở chỗ đó.', attrs: 'rows="2"' })}
 </div>
 <div class="panel">
   <h2>Mã QR ủng hộ</h2>
@@ -568,8 +568,8 @@ ${funding && CFG.api ? `<div class="panel" id="points">
     });
     const c = S.data.site.confirm;
     if (c?.enabled && (!c.question || !c.options?.length)) errs.push('Xác nhận khi vào trang: đã bật thì cần câu hỏi và ít nhất 1 lựa chọn.');
-    if (c?.enabled && c.answer != null && !(Number.isInteger(c.answer) && c.answer >= 1 && c.answer <= (c.options?.length || 0))) errs.push(`Xác nhận khi vào trang: đáp án phải là số từ 1 đến ${c.options?.length || 0}.`);
-    if (c?.enabled && c.answer != null && !c.error) errs.push('Xác nhận khi vào trang: có đáp án thì cần thông báo lỗi.');
+    if (c?.enabled && c.wrong != null && !(Number.isInteger(c.wrong) && c.wrong >= 1 && c.wrong <= (c.options?.length || 0))) errs.push(`Xác nhận khi vào trang: đáp án sai phải là số từ 1 đến ${c.options?.length || 0}.`);
+    if (c?.enabled && c.wrong != null && !c.error) errs.push('Xác nhận khi vào trang: có đáp án sai thì cần thông báo lỗi.');
     return errs;
   }
 

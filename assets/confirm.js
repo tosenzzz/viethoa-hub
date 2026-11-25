@@ -1,10 +1,10 @@
 // Hộp xác nhận khi vào trang. Câu trả lời (cùng câu hỏi) lưu trong localStorage nên lần sau không hỏi lại.
-// Có đáp án (data-a, số thứ tự từ 1) mà chọn sai: khoá vá trên web, bỏ link tải patch, hiện thông báo lỗi.
+// Chọn đúng dòng "đáp án sai" (data-w, số thứ tự từ 1): khoá vá trên web, bỏ link tải patch, hiện thông báo lỗi.
 (() => {
   const me = document.currentScript;
   const q = me.dataset.q;
   const opts = JSON.parse(me.dataset.o || '[]');
-  const answer = +me.dataset.a || 0;
+  const wrong = +me.dataset.w || 0;
   const error = me.dataset.e || 'Bạn không dùng được patch.';
   const KEY = 'vh-confirm';
 
@@ -23,7 +23,7 @@
     }
     document.querySelector('.patch-manual')?.remove();
   }
-  const check = (i) => { if (answer && i + 1 !== answer) lock(); };
+  const check = (i) => { if (wrong && i + 1 === wrong) lock(); };
 
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch {}
